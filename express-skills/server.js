@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var methodOverride = require('method-override')
 
 var indexRouter = require('./routes/index');
 var skillsRouter = require('./routes/skills');
@@ -15,11 +16,22 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(function(req, res, next) {
+  console.log('hello');
+  next();
+});
+
+
+
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(methorOverride('_method'));
+
 
 app.use('/', indexRouter);
 app.use('/skills', skillsRouter);
@@ -40,13 +52,10 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.get('/home', function(req, res) {
-  res.send('<h1>Express Skills</h1>');
-});
-
-app.listen(3000, function() {
-  console.log('Listening on port 3000');
-});
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+// http://localhost:3000/views/-> skills/index.ejs
+app.set('view engine', 'ejs');
 
 
 module.exports = app;
